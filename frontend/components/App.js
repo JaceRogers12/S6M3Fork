@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import axios from "axios"
+import styled from "styled-components"
 
   const sampleObj = {
     title: "Orange Nebula",
@@ -8,35 +9,70 @@ import axios from "axios"
     explanation: "This is really just a sample."
   }
 
+const StyledCard = styled.div`
+background-color: darkblue;
+padding: 2rem;
+border-radius: 1rem;
+border: 6px solid purple;
+display: flexbox;
+h3 {
+  color: white;
+  font-size: 30px;
+}
+p {
+  padding: 1rem;
+}
+:nth-child(3){
+  color: lemonchiffon;
+  border-bottom: 2px solid lemonchiffon;
+  display: ${card => card.children[2].props.children[1] ? "block":"none"};
+}
+.info {
+  color: lemonchiffon;
+  display: ${card => card.children[3].props.children[1] ? "block":"none"};
+}
+img {
+  width: 12rem;
+  color: ${card => card.children[1].props.src? "initial":"white"};
+  border-radius: .5rem;
+  &:hover{
+    scale:1.5;
+  }
+}
+`
+
 function App() {
-  const [nasaObj, setNasaObj] = useState("")
-   useEffect(() => {
-     axios.get("https:api.nasa.gov/planetary/apod?api_key=DEMO_KEY")
-       .catch(res => console.log(res.error))
-       .then(res => {
-        setNasaObj(res.data)
-        console.log(res.data)
-      })
-}, [])
+   const [nasaObj, setNasaObj] = useState("")
+      useEffect(() => {
+        axios.get("https:api.nasa.gov/planetary/apod?api_key=DEMO_KEY")
+          .catch(res => console.log(res.error))
+          .then(res => {
+           setNasaObj(res.data)
+           console.log(res.data)
+         })
+   }, [])
   return (
     <>
-      <Image title={nasaObj.title} url={nasaObj.url} date={nasaObj.date} info={nasaObj.explanation}/>
+      <Image 
+        title={nasaObj.title} 
+        url={nasaObj.url} 
+        date={nasaObj.date} 
+        info={nasaObj.explanation} 
+      />
     </>
   )
 }
-
 export default App
 
 function Image(props) {
-  console.log(props)
   return (
     <>
-      <div>
+      <StyledCard>
         <h3>Photo: {props.title}</h3>
         <img src={props.url} alt="Nasa Photo" />
         <p>Date: {props.date}</p>
-        <p>Information: {props.info}</p>
-      </div>
+        <p className={"info"}>Information: {props.info}</p>
+      </StyledCard>
     </>
   )
 }
